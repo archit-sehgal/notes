@@ -126,15 +126,46 @@ app.post("/notes", authenticateJwt, async (req, res) => {
 // delete single note (user) //CHECK!?
 app.delete("/delnote/:title", authenticateJwt, async (req, res) => {
     const title = req.params.title;
-    try {
-        const checkNotes = await Notes.deleteOne({ title: title, userid: req.user.username });
 
-        if (checkNotes.deletedCount === 0) {
-            res.status(404).json({ message: "No note with this title found" });
+    try {
+        const checkNotes = await Notes.findOne({ title: title });
+
+        if (!checkNotes) {
+            res.status(404).json({ message: "No note with this title found." });
         } else {
-            res.status(200).json({ message: "Note deleted successfully!" });
+            if (checkNotes.userid === req.user.username || req.user.adminid) {
+                await Notes.deleteOne({ title: title });
+                res.status(200).json({ message: "Note deleted successfully!" });
+                console.log(checkNotes.userid, req.user.username, req.user.adminid)
+            } else {
+                res.status(403).json({ message: "You don't have permission to delete this note." });
+                console.log(checkNotes.userid, req.user.username, req.user.adminid)
+            }
         }
     } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+app.post("/editnote/:title", authenticateJwt, async (req, res) => {
+    const title = req.params.title;
+    const { newtitle, newdesc } = req.body;
+    try {
+        const checkNote = await Notes.findOne({ title: title });
+        if (!checkNote) {
+            res.status(404).json({ message: "No note with this title found." });
+        } else {
+            if (checkNote.userid === req.user.username || req.user.adminid) {
+                checkNote.title = newtitle;
+                checkNote.desc = newdesc;
+                await checkNote.save();
+                res.json({ message: "note updated successfully",checknote: checkNote })
+            } else {
+                res.status(403).json({ message: "You don't have permission to delete this note." });
+            }
+        }
+    }
+    catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal Server Error" });
     }
@@ -160,7 +191,7 @@ app.post("/adminsignup", async (req, res) => {
 //admin login route
 app.post("/adminlogin", async (req, res) => {
     const { adminid, password } = req.body;
-    const CheckAdmin = await Admin.findOne({ adminid: adminid })
+    const CheckAdmin = await Admin.findOne({ adminid: adminid, password: password })
     if (!CheckAdmin) {
         res.status(401).json({ message: "Un-Authorized" })
     } else {
@@ -182,11 +213,35 @@ const checkAdminAccess = (req, res, next) => {
 app.post("/allnotes", authenticateJwt, checkAdminAccess, async (req, res) => {
     try {
         const notes = await Notes.find({});
-        res.status(200).json({message:"We found some notes",notes})
+        res.status(200).json({ message: "We found some notes", notes })
     } catch (error) {
         res.status(401).json({ message: "Error" });
     }
 });
+app.post("/allusers", authenticateJwt, checkAdminAccess, async (req, res) => {
+    try {
+        const users = await User.find({});
+        res.status(200).json({ message: "these are all the registered users", users })
+    } catch (error) {
+        res.status(401).json({ message: "Error" });
+    }
+})
+// delete any user (admin access required)
+app.delete("/deluser/:username", authenticateJwt, checkAdminAccess, async (req, res) => {
+    const username = req.params.username;
+    try {
+        const checkUser = await User.deleteOne({ username: username })
+        if (!checkUser) {
+            res.status(404).json({ message: "No user found" });
+        } else {
+            await Notes.deleteMany({ userid: username })
+            res.status(200).json({ message: "user deleted successfully!" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+})
 
 //server listening route
 app.listen(3000, () => {

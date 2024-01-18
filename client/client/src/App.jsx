@@ -1,48 +1,36 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import "./App.css";
-
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import UserSignup from "../components/usersignup";
+import Home from "../components/home";
+import Nav from "../components/nav";
+import UserLogin from "../components/userlogin";
+import UserNotes from "../components/usernotes";
+import ComposeNotes from "../components/composeNotes";
+import AdLogin from "../adminComponents/adlogin";
+import AdPortal from "../adminComponents/adportal";
+import EditNote from "../components/editNote";
 function App() {
   return (
-    <div>
-      <Form />
-    </div>
+    <Router>
+      <div>
+        <Nav/>
+        <Routes>
+          <Route path="/" element={<Home/>}/>
+          {/* User routes */}
+          <Route path="/signup" element={<UserSignup />} />
+          <Route path="/login" element={<UserLogin/>}/>
+          <Route path="/notes" element={<UserNotes/>}/>
+          <Route path="/compose" element={<ComposeNotes/>}/>
+          <Route path="/editnote/:title" element={<EditNote/>}/>
+          {/* Admin routes */}
+          <Route path="/adminlogin" element={<AdLogin/>}/>
+          <Route path="/adminPortal" element={<AdPortal/>}/>
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
-function Form() {
-  const[username,setUsername]=useState("")
-  const[password,setPassword]=useState("")
-  return (
-    <div>
-      <div className="formbox flex">
-        <input type="text" name="username" id="username" value={username} onChange={(e)=>setUsername(e.target.value)}/>
-        <input type="password" name="password" id="password" value={password} onChange={(e)=>setPassword(e.target.value)}/>
-        <button type="submit" onClick={()=>{
-          fetch("http://localhost:3000/signup",{
-            method:'POST',
-            body:JSON.stringify({
-              username:username,
-              password:password
-            }),
-            headers:{
-              "content-type": "application/json",
-            },
-          }).then((res)=>{
-            res.json().then((data)=>{
-              if(data.token){
-                localStorage.setItem("token",data.token);
-                alert("logged in")
-              }
-              else{
-                alert("error signing up")
-                window.location("/")
-              }
-            })
-          })
-        }}>signup</button>
-      </div>
-    </div>
-  );
-}
 export default App;
