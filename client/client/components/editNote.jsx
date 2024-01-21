@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 function EditNote() {
-  const title=useParams();
+  const {title}=useParams();
   const navigate=useNavigate();
   const [newtitle, setNewtitle] = useState("");
   const [newdesc, setNewdesc] = useState("");

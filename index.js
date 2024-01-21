@@ -136,10 +136,10 @@ app.delete("/delnote/:title", authenticateJwt, async (req, res) => {
             if (checkNotes.userid === req.user.username || req.user.adminid) {
                 await Notes.deleteOne({ title: title });
                 res.status(200).json({ message: "Note deleted successfully!" });
-                console.log(checkNotes.userid, req.user.username, req.user.adminid)
+                // console.log(checkNotes.userid, req.user.username, req.user.adminid)
             } else {
                 res.status(403).json({ message: "You don't have permission to delete this note." });
-                console.log(checkNotes.userid, req.user.username, req.user.adminid)
+                // console.log(checkNotes.userid, req.user.username, req.user.adminid)
             }
         }
     } catch (error) {
