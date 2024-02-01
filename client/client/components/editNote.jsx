@@ -23,7 +23,7 @@ function EditNote() {
         value={newdesc}
         onChange={(e) => setNewdesc(e.target.value)}
       />
-      <button
+      <button style={{marginLeft:"10px"}}
         onClick={() => {
           fetch(`http://localhost:3000/editnote/${title}`,{
             method:'POST',
@@ -45,6 +45,9 @@ function EditNote() {
       >
         save changes
       </button>
+      <button style={{marginLeft:"5px"}} onClick={()=>{
+        navigate("/notes")
+      }}>cancel</button>
     </div>
   );
 }

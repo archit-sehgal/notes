@@ -13,25 +13,41 @@ function Home() {
     fontSize: "1rem",
     borderRadius: "4px",
   };
-  if(!token) {
+  if (!token) {
     return (
-      <div className="homecomp comp ">
-        <h1>Create and Save Notes📝</h1>
-        <div className="btnbox flex" style={{ gap: "10px" }}>
-          <Link to={"/signup"} style={btn}>
-            Signup <i class="fa-solid fa-right-to-bracket"></i>
-          </Link>
-          <br />
-          <Link to={"/login"} style={btn}>
-            Login <i class="fa-solid fa-right-to-bracket"></i>
-          </Link>
+      <div className="homecomp flex">
+        <div className="homebox">
+          <h1>Create and Save Notes📝</h1>
+          <div className="btnbox flex" style={{ gap: "10px" }}>
+            <Link to={"/signup"} style={btn}>
+              Signup <i class="fa-solid fa-right-to-bracket"></i>
+            </Link>
+            <br />
+            <Link to={"/login"} style={btn}>
+              Login <i class="fa-solid fa-right-to-bracket"></i>
+            </Link>
+          </div>
         </div>
       </div>
     );
   } else {
     return (
-      <div className="homecomp comp ">
-        <h1>Create and Save Notes📝</h1>
+      <div className="homecomp  ">
+        <div className="homebox">
+          <h1>Create and Save Notes📝</h1>
+          <Link
+            to={"/notes"}
+            style={{
+              backgroundColor: "black",
+              color: "yellow",
+              textDecoration: "none",
+              padding: "3px",
+              borderRadius: "5px",
+            }}
+          >
+            View Notes
+          </Link>
+        </div>
       </div>
     );
   }

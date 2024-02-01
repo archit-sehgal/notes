@@ -52,6 +52,9 @@ function ComposeNotes() {
       >
         Compose
       </button>
+      <button style={{marginLeft:"5px"}} onClick={()=>{
+        navigate("/notes")
+      }}>cancel</button>
     </div>
   );
 }

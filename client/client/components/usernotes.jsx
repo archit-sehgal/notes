@@ -29,15 +29,15 @@ function UserNotes() {
 
   if (localStorage.getItem("token") && notes != "") {
     return (
-      <div className="usernotes comp">
+      <div className="usernotes flex comp">
         {notes.map((note) => (
-          <div key={note._id} className="flex">
+          <div key={note._id} className="notebox">
             <p>
-              <b>TITLE:</b>
+              <b>TITLE: </b>
               {note.title}
             </p>
             <p>
-              <b>DESC:</b>
+              <b>DESC: </b>
               {note.desc}
             </p>
             <a className="iconbtn edit" onClick={()=>{
